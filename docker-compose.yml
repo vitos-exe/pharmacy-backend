@@ -1,0 +1,19 @@
+services:
+  db:
+    container_name: database
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
+    
+  backend:
+    container_name: api
+    build: .:latest
+    depends_on: 
+      - db
+    environment:
+      - DB_NAME=db
+    ports:
+      - 8080:5000

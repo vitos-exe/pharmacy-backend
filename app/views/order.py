@@ -14,7 +14,7 @@ def create_order():
     try:
         order = order_schema.load(request.json)
     except ValidationError as e:
-        abort(Response(e.messages_dict['_schema'][0], 400))
+        e.normalized_messages(), 400
     with session_factory() as session:
         order.user = auth.current_user()
         session.add(order)
@@ -27,10 +27,10 @@ def get_order(id):
     with session_factory() as session:
         order = session.query(Order).filter_by(id = id).first()
         if order is None:
-            abort(Response('Order not found', 404))
+            return "Not found", 404
         user = auth.current_user()
         if order.user_id != user.id and user.role != "admin":
-            abort(Response("Access denied", 403))
+            return "Access denied", 403
         return order_schema.dump(order)
 
 @order.delete('/<int:id>')
@@ -39,10 +39,10 @@ def delete_order(id):
     with session_factory() as session:
         order = session.query(Order).filter_by(id = id).first()
         if order is None:
-            abort(Response('Order not found', 404))
+            return "Not found", 404
         user = auth.current_user()
         if order.user_id != user.id and user.role != "admin":
-            abort(Response("Access denied", 403))
+            return "Access denied", 403
         session.delete(order)
         session.commit()
     return 200

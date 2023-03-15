@@ -15,6 +15,3 @@ def verify_password(username, password):
 @auth.get_user_roles
 def get_roles(user):
     return user.role
-
-def return_auth():
-    return auth

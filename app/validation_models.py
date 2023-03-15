@@ -18,7 +18,7 @@ class OrderSchema(Schema):
 
     @post_load
     def deserialize_order(self, data, **kwargs):
-        order = Order(user_id=1, medicine = [])
+        order = Order(medicine = [])
         with session_factory() as session:
             for d in data['medicine']:
                 med = session.query(Medicine).filter_by(name = d.name).first()
@@ -36,7 +36,7 @@ class OrderSchema(Schema):
 class UserSchema(Schema):
     name = fields.Str(required=True)
     email = fields.Str(required=True)
-    password = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
     address = fields.Str(required=True)
 
     @post_load

@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, request
 from .views import blueprints
-from .db import create_db_cli_commands
+from .db import init_db
 
 def create_app():
     app = Flask(__name__)
 
-    create_db_cli_commands(app)
+    init_db()
 
     for bp in blueprints:
         app.register_blueprint(bp)
