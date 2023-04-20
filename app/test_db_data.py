@@ -1,4 +1,4 @@
-from .models import User, Medicine, Order, OrderHasMedicine
+from .models import User, Medicine, Order, OrderHasMedicine, MedicineOnDemand
 from werkzeug.security import generate_password_hash
 
 _user = User(
@@ -20,27 +20,36 @@ _admin = User(
 _ibuprofen = Medicine(
     name = "Ibuprofen",
     price = 50,
-    quantity = 25
+    quantity = 25,
+    description = "Desciption"
 )
 
 _nurofen = Medicine(
     name = "Nurofen",
     price = 10,
-    quantity = 30
+    quantity = 30,
+    description = "Desciption"
 )
 
 _order = Order(
     user=_user,
-    medicine=[
+    order_items=[
         OrderHasMedicine(
+            name=_ibuprofen.name,
             medicine=_ibuprofen,
             quantity=10
         ),
         OrderHasMedicine(
+            name=_nurofen.name,
             medicine=_nurofen,
             quantity=15
         )
     ]
 )
 
-test_data = [_user, _admin, _ibuprofen, _nurofen, _order]
+_medicine_on_demand_1 = MedicineOnDemand(
+    name='Unknown name',
+    quantity=10
+)
+
+test_data = [_user, _admin, _ibuprofen, _nurofen, _order, _medicine_on_demand_1]

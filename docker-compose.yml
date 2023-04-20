@@ -8,12 +8,12 @@ services:
     volumes:
       - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
     
-  backend:
+  api:
     container_name: api
-    build: .:latest
+    build: .
     depends_on: 
       - db
-    environment:
+    environment: 
       - DB_NAME=db
     ports:
       - 8080:5000

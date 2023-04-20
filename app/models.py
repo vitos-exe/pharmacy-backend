@@ -28,18 +28,18 @@ class Order(Base):
     id = Column(Integer, primary_key = True)
     create_time = Column(DateTime, default = func.now())
     user_id = Column(Integer, ForeignKey('user.id'))
+    status = Column(String, nullable=False, default='pending')
 
 class OrderHasMedicine(Base):
     __tablename__ = 'order_has_medicine'
-    medicine_id = Column(Integer, ForeignKey('medicine.id'), primary_key=True)
-    order_id = Column(Integer, ForeignKey('order.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    medicine_id = Column(Integer, ForeignKey('medicine.id'))
+    order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
     quantity = Column(Integer, nullable=False)
-    medicine = relationship(Medicine, backref='orders')
-    order = relationship(Order, backref='medicine')
+    medicine = relationship(Medicine, backref='order_items')
+    order = relationship(Order, backref='order_items')
 
-    @property
-    def name(self):
-        return self.medicine.name
 
 class MedicineOnDemand(Base):
     __tablename__ = 'medicine_on_demand'
@@ -48,7 +48,8 @@ class MedicineOnDemand(Base):
     quantity = Column(Integer, nullable=False)
     create_time = Column(DateTime, default = func.now())
 
-def update(obj, kwargs):
+def update(obj, kwargs: dict):
+    kwargs = {k: v for k, v in kwargs.items() if kwargs[k] is not None}
     for key, value in kwargs.items():
         if hasattr(obj, key):
             setattr(obj, key, value)
