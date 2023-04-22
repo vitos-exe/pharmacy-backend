@@ -30,19 +30,6 @@ def create_user():
         session.add(user)
         session.commit()
         return user_schema.dump(user), 201
-
-# @user.get('/<int:id>')
-# @auth.login_required
-# def get_user(id):
-#     with session_factory() as session:
-#         user = session.query(User).filter_by(id = id).first()
-#     if user is None:
-#         return 'Not found', 404
-#     current_user = auth.current_user()
-#     if current_user.id != user.id and current_user.role != "admin":
-#         return "Access denied", 403
-#     return user_schema.dump(user), 200
-
 @user.get('/me')
 @auth.login_required
 def get_me():
@@ -68,7 +55,6 @@ def update_user(id):
                 updated.password = generate_password_hash(updated.password)
 
             update(user, UserSchema().dump(updated))
-            t = check_password_hash(user.password, "1234")
             session.commit()
             users = session.query(User).all()[1]
             return UserSchema(only=['email', 'address', 'email', 'name', 'id']).dump(user), 200
@@ -85,7 +71,6 @@ def delete_user(id):
         current_user = auth.current_user()
         if current_user.id != user.id and current_user.role != "admin":
             return "Access denied", 403
-        print("Here")
         session.delete(user)
         session.commit()
     return "Success", 200
